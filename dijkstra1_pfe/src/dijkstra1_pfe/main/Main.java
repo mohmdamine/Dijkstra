@@ -9,10 +9,10 @@ public class Main {
 		// TODO Auto-generated method stub
 		Algorithm obj = new Algorithm();
 		
-		// Create a new graph.
+		
 		Graphe g = new Graphe(9);
 		
-		// Add the required edges.
+		
 		g.addEdge(0, 1, 4); g.addEdge(0, 7, 8);
 		g.addEdge(1, 2, 8); g.addEdge(1, 7, 11); g.addEdge(2, 1, 8);
 		g.addEdge(2, 8, 2); g.addEdge(2, 5, 4); g.addEdge(2, 3, 7);
@@ -23,14 +23,14 @@ public class Main {
 		g.addEdge(7, 0, 8); g.addEdge(7, 8, 7); g.addEdge(7, 1, 11); g.addEdge(7, 6, 1);
 		g.addEdge(8, 2, 2); g.addEdge(8, 7, 7); g.addEdge(8, 6, 6);
 		
-		// Calculate Dijkstra.
+		
 		obj.calculer(g.getNoeud(0));	
 
-		// Print the minimum Distance.
+		
 		for(Noeud v:g.getNoeuds()){
-			System.out.print("Vertex - "+v+" , Dist - "+ v.minDistance+" , Path - ");
-			for(Noeud pathvert:v.path) {
-				System.out.print(pathvert+" ");
+			System.out.print("Noeud - "+v+" , Dist - "+ v.minDistance+" , trajet - ");
+			for(Noeud trajetnoeud:v.trajet) {
+				System.out.print(trajetnoeud+" ");
 			}
 			System.out.println(""+v);
 		}
