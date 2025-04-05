@@ -19,5 +19,11 @@ public class Noeud implements Comparable<Noeud> {
 		}
 		public String toString(){
 			return name;
-		}	
+		}
+		public Noeud getNoeudByNom(String nom) {
+	   		 for (Noeud n : Noeuds) {
+	       			 if (n.nom.equals(nom)) return n;
+	   		 }
+	    		return null;
+		}
 }
