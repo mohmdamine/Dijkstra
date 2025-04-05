@@ -39,6 +39,11 @@ public class Main {
 			System.out.print(trajetnoeud+" ");
 		}
 		System.out.println(""+n);
+		JFrame frame = new JFrame("Graph Dijkstra Visualisation");
+	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	        frame.setSize(700, 700);
+	        frame.add(new GraphPanel(g,g.getNoeud(val).trajet));
+	        frame.setVisible(true);
 	}
 
 }
