@@ -2,73 +2,83 @@ package dijkstra1_pfe.dijkstra;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+public class GraphPanel extends JPanel {
+    private Graphe graphe;
+    public ArrayList<Noeud> chemin;
+    private Map<String, Point> positions;
 
-public class GraphPanel extends JPanel{
-	 private Graphe graphe;
-	    private Map<String, Point> positions;
-	    private List<Noeud> chemin;
+    public GraphPanel(Graphe graphe, ArrayList<Noeud> chemin) {
+        this.graphe = graphe;
+        this.chemin = chemin;
+        this.positions = new HashMap<>();
+        generateNodePositions();
+    }
 
-	    public GraphPanel(Graphe graphe, List<Noeud> chemin) {
-	        this.graphe = graphe;
-	        this.chemin = chemin;
+    private void generateNodePositions() {
+        int rayon = 200;
+        int centreX = 350;
+        int centreY = 250;
+        int total = graphe.getNoeuds().size();
 
-	        positions = new HashMap<>();
-	        // Positionner les noeuds manuellement
-	        positions.put("v0", new Point(100, 50));
-	        positions.put("v1", new Point(200, 50));
-	        positions.put("v2", new Point(300, 100));
-	        positions.put("v3", new Point(400, 200));
-	        positions.put("v4", new Point(300, 300));
-	        positions.put("v5", new Point(200, 250));
-	        positions.put("v6", new Point(100, 300));
-	        positions.put("v7", new Point(50, 200));
-	        positions.put("v8", new Point(200, 150));
-	    }
+        for (int i = 0; i < total; i++) {
+            double angle = 2 * Math.PI * i / total;
+            int x = (int) (centreX + rayon * Math.cos(angle));
+            int y = (int) (centreY + rayon * Math.sin(angle));
+            positions.put(graphe.getNoeud(i).nom, new Point(x, y));
+        }
+    }
 
-	    @Override
-	    protected void paintComponent(Graphics g) {
-	        super.paintComponent(g);
+    private boolean estDansChemin(Noeud a, Noeud b) {
+        for (int i = 0; i < chemin.size() - 1; i++) {
+            Noeud n1 = chemin.get(i);
+            Noeud n2 = chemin.get(i + 1);
+            if ((n1 == a && n2 == b) || (n1 == b && n2 == a)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	        // Dessiner les arêtes
-	        for (Noeud noeud : graphe.getNoeuds()) {
-	            Point p1 = positions.get(noeud.nom);
-	            for (Edge edge : noeud.filsList) {
-	                Point p2 = positions.get(edge.suivant.nom);
-	                g.setColor(Color.GRAY);
-	                g.drawLine(p1.x, p1.y, p2.x, p2.y);
-	                g.drawString("" + (int)edge.valeur, (p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
-	            }
-	        }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-	        // Dessiner les chemins de Dijkstra
-	        g.setColor(Color.RED);
-	        for (int i = 0; i < chemin.size() - 1; i++) {
-	            Point p1 = positions.get(chemin.get(i).nom);
-	            Point p2 = positions.get(chemin.get(i + 1).nom);
-	            g.drawLine(p1.x, p1.y, p2.x, p2.y);
-	        }
+        // Arêtes
+        for (Noeud n : graphe.getNoeuds()) {
+            Point p1 = positions.get(n.nom);
+            for (Edge e : n.filsList) {
+                Point p2 = positions.get(e.suivant.nom);
+                if (estDansChemin(n, e.suivant)) {
+                    g.setColor(Color.RED);
+                } else {
+                    g.setColor(Color.LIGHT_GRAY);
+                }
+                g.drawLine(p1.x, p1.y, p2.x, p2.y);
 
-	        // Ajouter le dernier saut jusqu’à la destination
-	        if (chemin.size() > 0) {
-	            Point p1 = positions.get(chemin.get(chemin.size() - 1).nom);
-	            Point p2 = positions.get(graphe.getNoeudByNom(chemin.get(chemin.size() - 1).pere.nom).nom);
-	            g.drawLine(p1.x, p1.y, p2.x, p2.y);
-	        }
+                g.setColor(Color.BLACK);
+                g.drawString(String.valueOf((int) e.valeur), (p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
+            }
+        }
 
-	        // Dessiner les noeuds
-	        for (Noeud noeud : graphe.getNoeuds()) {
-	            Point p = positions.get(noeud.nom);
-	            g.setColor(Color.CYAN);
-	            g.fillOval(p.x - 15, p.y - 15, 30, 30);
-	            g.setColor(Color.BLACK);
-	            g.drawOval(p.x - 15, p.y - 15, 30, 30);
-	            g.drawString(noeud.nom, p.x - 10, p.y + 5);
-	        }
-	    }
-	    
-	    
+        // Noeuds
+        for (Noeud n : graphe.getNoeuds()) {
+            Point p = positions.get(n.nom);
+            if (!chemin.isEmpty() && n == chemin.get(0)) {
+                g.setColor(Color.GREEN);
+            } else if (!chemin.isEmpty() && n == chemin.get(chemin.size() - 1)) {
+                g.setColor(Color.ORANGE);
+            } else if (chemin.contains(n)) {
+                g.setColor(Color.RED);
+            } else {
+                g.setColor(Color.CYAN);
+            }
+
+            g.fillOval(p.x - 15, p.y - 15, 30, 30);
+            g.setColor(Color.BLACK);
+            g.drawOval(p.x - 15, p.y - 15, 30, 30);
+            g.drawString(n.nom, p.x - 10, p.y + 5);
+        }
+    }
 }
