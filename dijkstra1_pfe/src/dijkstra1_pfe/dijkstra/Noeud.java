@@ -1,29 +1,27 @@
 package dijkstra1_pfe.dijkstra;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
+
+
 
 public class Noeud implements Comparable<Noeud> {
-	 public final String name;
-		public ArrayList<Edge> neighbours;
-		public LinkedList<Noeud> path;
-		public double minDistance = Double.POSITIVE_INFINITY;
-		public Noeud previous;
-		public int compareTo(Noeud other){
-			return Double.compare(minDistance,other.minDistance);		
-		}
-		public Noeud(String name){
-			this.name = name;
-			neighbours = new ArrayList<Edge>();
-			path = new LinkedList<Noeud>();
-		}
-		public String toString(){
-			return name;
-		}
-		public Noeud getNoeudByNom(String nom) {
-	   		 for (Noeud n : Noeuds) {
-	       			 if (n.nom.equals(nom)) return n;
-	   		 }
-	    		return null;
-		}
+    public final String nom;
+    public List<Edge> filsList;
+    public LinkedList<Noeud> trajet;
+    public double minDistance = Double.POSITIVE_INFINITY;
+    public Noeud pere;
+
+    public Noeud(String nom) {
+        this.nom = nom;
+        this.filsList = new ArrayList<>();
+        this.trajet = new LinkedList<>();
+    }
+
+    public int compareTo(Noeud autre) {
+        return Double.compare(minDistance, autre.minDistance);
+    }
+
+    public String toString() {
+        return nom;
+    }
 }
